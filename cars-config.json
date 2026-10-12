@@ -15,20 +15,16 @@
     "name": "Go-e",
     "color": "#813d9c"
   },
+  "2A-1": {
+    "name": "Easee",
+    "color": "#4d8fff"
+  },
   "2A-2": {
     "name": "Easee EV",
     "color": "#4d8fff"
   },
-  "2A-1": {
-    "name": "easse",
-    "color": "#4d8fff"
-  },
-  "1Β-1": {
+  "2B-1": {
     "name": "Solax",
-    "color": "#813d9c"
-  },
-  "1Β-2": {
-    "name": "solax",
     "color": "#00d68f"
   }
 }

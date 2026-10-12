@@ -4481,13 +4481,29 @@
     }
 
     #adminModal>div,
-    #rfidModal .modal,
-    #reportsModal>div {
+    #rfidModal .modal {
         width: min(96vw, 1350px) !important;
         max-width: min(96vw, 1350px) !important;
         height: 88vh !important;
         max-height: 90vh !important;
         min-height: 580px !important;
+        background: var(--surface) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border: 1px solid var(--border-hi) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 32px 100px var(--shadow-hard), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        margin: auto !important;
+        padding: 24px !important;
+    }
+
+    #reportsModal>div {
+        width: min(94vw, 540px) !important;
+        max-width: min(94vw, 540px) !important;
         background: var(--surface) !important;
         backdrop-filter: blur(24px) !important;
         -webkit-backdrop-filter: blur(24px) !important;
@@ -4513,10 +4529,9 @@
     }
 
     .reports-modal-grid {
-        display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
-        gap: 20px;
-        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
         box-sizing: border-box;
     }
     .reports-col-card {
@@ -7872,7 +7887,7 @@
     window.confirmSwitchCharging = function (cardId, chargerId, switchFromId) {
         window.promptConfirm(
             '<i class="fas fa-random" style="color:var(--blue);"></i> Switch Charging',
-            'Θέλετε να σταματήσετε τη φόρτιση στο <strong>' + switchFromId + '</strong> και να ξεκινήσετε στο <strong>' + chargerId + '</strong>;',
+            'Do you want to stop charging on <strong>' + switchFromId + '</strong> and start on <strong>' + chargerId + '</strong>?',
             'var(--blue)',
             '#fff',
             function () {
@@ -8072,8 +8087,8 @@
                     ? '<i class="fas fa-stop-circle" style="color:var(--red);"></i> Stop Charging'
                     : '<i class="fas fa-play-circle" style="color:var(--green);"></i> Start Charging',
                 smappeeAction === 'stop'
-                    ? 'Θέλετε να σταματήσετε τη φόρτιση στον φορτιστή Smappee;'
-                    : 'Θέλετε να ξεκινήσετε τη φόρτιση στον φορτιστή Smappee;',
+                    ? 'Do you want to stop charging on Smappee charger?'
+                    : 'Do you want to start charging on Smappee charger?',
                 smappeeAction === 'stop' ? 'var(--red)' : 'var(--green)',
                 smappeeAction === 'stop' ? '#fff' : '#111',
                 function () {
@@ -8310,20 +8325,20 @@
         var periodText = "";
         if (rVal === "day") {
             var d = document.getElementById("reportDaySelect");
-            periodText = (d && d.value) ? d.value : "Σήμερα";
+            periodText = (d && d.value) ? d.value : "Today";
         } else if (rVal === "month") {
             var m = document.getElementById("reportMonthSelect");
-            periodText = (m && m.options[m.selectedIndex]) ? m.options[m.selectedIndex].text : "Επιλεγμένος Μήνας";
+            periodText = (m && m.options[m.selectedIndex]) ? m.options[m.selectedIndex].text : "Selected Month";
         } else {
             var s = document.getElementById("reportRangeStart");
             var e = document.getElementById("reportRangeEnd");
-            periodText = ((s && s.value) ? s.value : "—") + " έως " + ((e && e.value) ? e.value : "—");
+            periodText = ((s && s.value) ? s.value : "—") + " to " + ((e && e.value) ? e.value : "—");
         }
         var ch = document.getElementById("reportChargerSelect");
-        var chText = (ch && ch.options[ch.selectedIndex]) ? ch.options[ch.selectedIndex].text : "Όλες";
+        var chText = (ch && ch.options[ch.selectedIndex]) ? ch.options[ch.selectedIndex].text : "All";
         var u = document.getElementById("reportUserSelect");
-        var uText = (u && u.options[u.selectedIndex]) ? u.options[u.selectedIndex].text : "Όλοι";
-        prevEl.innerHTML = "Περίοδος: <span style='font-weight:600; color:var(--text);'>" + periodText + "</span> • Θέση: <span style='font-weight:600;'>" + chText + "</span> • Οδηγός: <span style='font-weight:600;'>" + uText + "</span>";
+        var uText = (u && u.options[u.selectedIndex]) ? u.options[u.selectedIndex].text : "All";
+        prevEl.innerHTML = "Period: <span style='font-weight:600; color:var(--text);'>" + periodText + "</span> • Position: <span style='font-weight:600;'>" + chText + "</span> • User: <span style='font-weight:600;'>" + uText + "</span>";
     };
 
     window.openReportsModal = function () {
@@ -10620,8 +10635,8 @@
                     var t = (x && x.time) ? x.time : '--:--:--';
                     var u = (x && x.user) ? x.user : 'Unknown';
                     var m = (x && x.text) ? x.text : '';
-                    var isStart = m.toLowerCase().indexOf('start') !== -1 || m.indexOf('ξεκίνησε') !== -1;
-                    var isStop = m.toLowerCase().indexOf('stop') !== -1 || m.indexOf('ολοκληρώθηκε') !== -1 || m.indexOf('σταμάτησε') !== -1;
+                    var isStart = m.toLowerCase().indexOf('start') !== -1;
+                    var isStop = m.toLowerCase().indexOf('stop') !== -1 || m.toLowerCase().indexOf('complete') !== -1;
                     var iconHtml = isStart 
                         ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:rgba(0,214,143,0.15);color:#00d68f;font-size:14px;flex-shrink:0;"><i class="fas fa-bolt"></i></span>'
                         : (isStop 
@@ -11596,20 +11611,20 @@
                         System Reports & Analytics
                     </h3>
                     <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">
-                        Εξαγωγή αναλυτικών αναφορών κατανάλωσης, χρόνου φόρτισης και ιστορικού σε PDF
+                        Export detailed energy consumption, charging duration, and session history to PDF
                     </div>
                 </div>
             </div>
             <button type="button" onclick="closeReportsModal()" class="modal-close-btn" title="Close">✕</button>
         </div>
 
-        <!-- 2-Column Responsive Body -->
+        <!-- Single Column Body -->
         <div class="reports-modal-body" style="flex:1; min-height:0; overflow-y:auto; padding-right:4px;">
             <div class="reports-modal-grid">
-                <!-- Column 1: Filters & Parameters -->
+                <!-- Filters & Parameters Card -->
                 <div class="reports-col-card">
                     <div style="font-size:14px; font-weight:700; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-                        <i class="fas fa-sliders-h" style="color:var(--blue);"></i> Παράμετροι Αναφοράς
+                        <i class="fas fa-sliders-h" style="color:var(--blue);"></i> Report Parameters
                     </div>
 
                     <!-- Report Type Selector -->
@@ -11630,13 +11645,13 @@
 
                     <!-- Month Input Panel -->
                     <div id="reportMonthPanel" class="report-panel" style="margin-bottom:16px;">
-                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Επιλογή Μήνα / Month</label>
+                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Select Month</label>
                         <select id="reportMonthSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
                     </div>
 
                     <!-- Single Day Input Panel -->
                     <div id="reportDayPanel" class="report-panel" style="display:none; margin-bottom:16px;">
-                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Επιλογή Ημέρας / Day</label>
+                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Select Day</label>
                         <input type="text" id="reportDaySelect" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;">
                     </div>
 
@@ -11644,11 +11659,11 @@
                     <div id="reportRangePanel" class="report-panel" style="display:none; margin-bottom:16px;">
                         <div class="report-row" style="display:flex; gap:12px;">
                             <div style="flex:1;">
-                                <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Έναρξη / Start</label>
+                                <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Start Date</label>
                                 <input type="text" id="reportRangeStart" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;">
                             </div>
                             <div style="flex:1;">
-                                <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Λήξη / End</label>
+                                <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">End Date</label>
                                 <input type="text" id="reportRangeEnd" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;">
                             </div>
                         </div>
@@ -11656,74 +11671,31 @@
 
                     <!-- Quick Period Presets -->
                     <div style="margin-bottom:16px;">
-                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">Γρήγορη Επιλογή Περιόδου</label>
+                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">Quick Period Selection</label>
                         <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('today')">Σήμερα</button>
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('yesterday')">Χθες</button>
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('thisMonth')">Τρέχων Μήνας</button>
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('lastMonth')">Προηγούμενος Μήνας</button>
+                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('today')">Today</button>
+                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('yesterday')">Yesterday</button>
+                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('thisMonth')">This Month</button>
+                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('lastMonth')">Last Month</button>
                         </div>
                     </div>
 
                     <!-- Charger & User Selectors -->
                     <div class="report-row" style="display:flex; gap:12px; margin-top:12px; margin-bottom:10px;">
                         <div style="flex:1;">
-                            <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Θέση / Position</label>
+                            <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Position</label>
                             <select id="reportChargerSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
                         </div>
                         <div style="flex:1;">
-                            <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Οδηγός / User</label>
+                            <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">User</label>
                             <select id="reportUserSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 2: Overview & Export Card -->
-                <div class="reports-col-card" style="display:flex; flex-direction:column; justify-content:space-between;">
-                    <div>
-                        <div style="font-size:14px; font-weight:700; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-                            <i class="fas fa-file-pdf" style="color:var(--red);"></i> Στοιχεία Εξαγωγής
-                        </div>
-
-                        <!-- Highlights Banner -->
-                        <div style="background:var(--surface3); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px;">
-                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                                <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:13px; color:var(--text);">
-                                    <i class="fas fa-check-circle" style="color:var(--green);"></i> Περιεχόμενο Επίσημης Αναφοράς
-                                </div>
-                                <span style="background:rgba(59,130,246,0.15); color:var(--blue); font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px; border:1px solid rgba(59,130,246,0.3);">PDF Document</span>
-                            </div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:12px; color:var(--text-sec);">
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <i class="fas fa-bolt" style="color:var(--yellow); font-size:11px;"></i> Κατανάλωση kWh
-                                </div>
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <i class="fas fa-clock" style="color:var(--blue); font-size:11px;"></i> Διάρκεια Φόρτισης
-                                </div>
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <i class="fas fa-id-card" style="color:var(--purple); font-size:11px;"></i> Κάρτες RFID / Οδηγοί
-                                </div>
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <i class="fas fa-charging-station" style="color:var(--green); font-size:11px;"></i> Αναλυτικά Sessions
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Live Selection Preview Box -->
-                        <div style="background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.2); border-radius:10px; padding:14px 16px; margin-bottom:16px;">
-                            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--blue); font-weight:700; margin-bottom:6px;">
-                                Ενεργά Κριτήρια Φιλτραρίσματος
-                            </div>
-                            <div id="reportsSelectionPreview" style="font-size:13px; color:var(--text); line-height:1.5;">
-                                Περίοδος: <span style="font-weight:600; color:var(--text);">Σήμερα</span> • Θέση: <span style="font-weight:600;">Όλες</span> • Οδηγός: <span style="font-weight:600;">Όλοι</span>
-                            </div>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div style="display:flex; gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
+                    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
                         <button type="button" onclick="closeReportsModal()" class="btn btn-cancel" style="padding:10px 20px;">Cancel</button>
-                        <button type="button" onclick="requestHistoryAndGenerate()" class="btn btn-save" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; height:44px; font-size:14px; font-weight:700;">
+                        <button type="button" onclick="requestHistoryAndGenerate()" class="btn btn-save" style="display:flex; align-items:center; justify-content:center; gap:8px; height:42px; padding:0 24px; font-size:14px; font-weight:700;">
                             <i class="fas fa-file-pdf"></i> Download PDF
                         </button>
                     </div>
@@ -12180,14 +12152,14 @@
         FLOORS: [
             { id: '1A', cars: 2 },
             { id: '2A', cars: 2 },
-            { id: '1Β', cars: 2 },
-            { id: '2Β', cars: 1 }
+            { id: '1B', cars: 2 },
+            { id: '2B', cars: 1 }
         ],
         CHARGERS: {
             "victron": { "zone": "1A", "spot": 1, "type": "victron", "ip": "192.168.20.176" },
             "goe": { "zone": "1A", "spot": 2, "type": "goe", "ip": "192.168.20.204" },
             "Easee": { "zone": "2A", "spot": 1, "type": "easee", "ip": "" },
-            "solax": { "zone": "1Β", "spot": 2, "type": "solax", "ip": "192.168.20.236" }
+            "solax": { "zone": "1B", "spot": 2, "type": "solax", "ip": "192.168.20.236" }
         },
         USERS: {}
     };
@@ -13478,7 +13450,7 @@
 
             if (cardIdsSeen[cid]) {
                 hasError = true;
-                msg += "Duplicate CARD ID: " + cid + " (Η κάρτα αυτή έχει καταχωρηθεί ήδη! Για να δώσετε πρόσβαση σε πολλούς φορτιστές, γράψτε τους διαχωρισμένους με κόμμα, π.χ. victron_1, easee_1 στην ίδια γραμμή!)\n";
+                msg += "Duplicate CARD ID: " + cid + " (This card is already registered! To grant access to multiple chargers, list them separated by comma, e.g. victron_1, easee_1 on the same line!)\n";
                 continue;
             }
             cardIdsSeen[cid] = true;
