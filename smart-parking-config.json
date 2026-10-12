@@ -1,0 +1,100 @@
+{
+  "FLOORS": [
+    {
+      "id": "1A",
+      "cars": 2
+    },
+    {
+      "id": "2A",
+      "cars": 2
+    },
+    {
+      "id": "1Β",
+      "cars": 2
+    },
+    {
+      "id": "2Β",
+      "cars": 1
+    }
+  ],
+  "CHARGERS": {
+    "victron": {
+      "zone": "1A",
+      "spot": 1,
+      "type": "victron",
+      "ip": "192.168.20.176"
+    },
+    "goe": {
+      "zone": "1A",
+      "spot": 2,
+      "type": "goe",
+      "ip": "192.168.20.204"
+    },
+    "Easee": {
+      "zone": "2A",
+      "spot": 1,
+      "type": "easee",
+      "ip": ""
+    },
+    "solax": {
+      "zone": "1Β",
+      "spot": 2,
+      "type": "solax",
+      "ip": "192.168.20.236"
+    }
+  },
+  "USERS": {
+    "5A61CA0003": {
+      "name": "Χρήστης Victron",
+      "charger": "victron, solax",
+      "zone": "",
+      "spot": 1,
+      "pin": "1234",
+      "isAdmin": false
+    },
+    "D3D8C70003": {
+      "name": "DegerHellas",
+      "charger": "victron",
+      "zone": "1A",
+      "spot": 1,
+      "pin": "4321",
+      "isAdmin": false
+    },
+    "0401020304": {
+      "name": "Χρήστης Go-E",
+      "charger": "goe",
+      "zone": "1A",
+      "spot": 2,
+      "pin": "1234",
+      "isAdmin": false
+    },
+    "8DD4C70003": {
+      "name": "Χρήστης Go-E",
+      "charger": "goe",
+      "zone": "1A",
+      "spot": 2,
+      "pin": "1234",
+      "isAdmin": false
+    },
+    "99D4C70003": {
+      "name": "1Χρήστης Easee",
+      "charger": "goe",
+      "zone": "1A",
+      "spot": 2,
+      "pin": "1234",
+      "isAdmin": false
+    },
+    "5561CA0003": {
+      "name": "Χρήστης Easee",
+      "charger": "Easee",
+      "zone": "2A",
+      "spot": 1,
+      "pin": "1234",
+      "isAdmin": false
+    }
+  },
+  "TOTAL_POWER": 22,
+  "maxPower": 22,
+  "FORECAST_SCENARIO": "scen_1783409871055",
+  "savedAt": 1788459884434
+}

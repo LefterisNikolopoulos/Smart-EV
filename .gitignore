@@ -1,9 +1,31 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.log
 
-# Operating System
+# Backups & Temp files
+*.bak*
+*.tmp
+*.old
+
+# Vendor Manuals & Datasheets
+*.pdf
+*.xlsx
+RS232_485_422 TO POE ETH (B) - Waveshare Wiki.html
+
+# Dumps & Historical Sub-flow snippets
+flows_pi_*.json
+server_flows_*.json
+solax_*_flow.json
+smappee.json
+smappe/
+eassy/
+Τελικο σταδιο/
+charging-history.json
+last-ui-states.json
+rfid-notifications.json
+
+# Node & OS
+node_modules/
 .DS_Store
-Thumbs.db

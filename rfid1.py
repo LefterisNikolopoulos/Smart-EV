@@ -158,19 +158,17 @@ def is_card_registered(card_id):
     global CONFIG_PATH_CACHE, CONFIG_DATA_CACHE, CONFIG_MTIME_CACHE
     
     if CONFIG_PATH_CACHE is None:
-        config_path = "/home/lefteris/Documents/DegerHellas/rfid/smart-parking-config.json"
-        if not os.path.exists(config_path):
-            candidates = [
-                "/home/smartev/.node-red/smart-parking-config.json",
-                "/home/lefteris/.node-red/smart-parking-config.json",
-                "/home/pi/.node-red/smart-parking-config.json",
-                "/root/.node-red/smart-parking-config.json",
-                "/data/smart-parking-config.json"
-            ]
-            for c in candidates:
-                if os.path.exists(c):
-                    config_path = c
-                    break
+        home_dir = os.path.expanduser("~")
+        candidates = [
+            os.path.join(home_dir, ".node-red", "smart-parking-config.json"),
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "smart-parking-config.json"),
+            "/data/smart-parking-config.json"
+        ]
+        config_path = candidates[0]
+        for c in candidates:
+            if os.path.exists(c):
+                config_path = c
+                break
         CONFIG_PATH_CACHE = config_path
         
     try:
