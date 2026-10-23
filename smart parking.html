@@ -4502,8 +4502,8 @@
     }
 
     #reportsModal>div {
-        width: min(94vw, 540px) !important;
-        max-width: min(94vw, 540px) !important;
+        width: min(94vw, 920px) !important;
+        max-width: min(94vw, 920px) !important;
         background: var(--surface) !important;
         backdrop-filter: blur(24px) !important;
         -webkit-backdrop-filter: blur(24px) !important;
@@ -4515,7 +4515,7 @@
         flex-direction: column !important;
         overflow: hidden !important;
         margin: auto !important;
-        padding: 24px !important;
+        padding: 26px !important;
     }
 
     #adminModal>div {
@@ -4529,8 +4529,9 @@
     }
 
     .reports-modal-grid {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
         min-height: 0;
         box-sizing: border-box;
     }
@@ -4540,6 +4541,8 @@
         border-radius: 12px;
         padding: 20px;
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
     }
 
     md-toast, .md-toast-error, md-toast .md-toast-content {
@@ -11618,89 +11621,106 @@
             <button type="button" onclick="closeReportsModal()" class="modal-close-btn" title="Close">✕</button>
         </div>
 
-        <!-- Single Column Body -->
+        <!-- Spacious 2-Column Responsive Body -->
         <div class="reports-modal-body" style="flex:1; min-height:0; overflow-y:auto; padding-right:4px;">
             <div class="reports-modal-grid">
-                <!-- Filters & Parameters Card -->
+                <!-- Column 1: Time & Period Range -->
                 <div class="reports-col-card">
-                    <div style="font-size:14px; font-weight:700; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-                        <i class="fas fa-sliders-h" style="color:var(--blue);"></i> Report Parameters
+                    <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                        <i class="fas fa-calendar-alt" style="color:var(--blue);"></i> Period Selection
                     </div>
 
                     <!-- Report Type Selector -->
                     <div style="display:flex; gap:6px; margin-bottom:16px; background:var(--surface3); padding:4px; border-radius:8px; border:1px solid var(--border);">
-                        <label style="flex:1; text-align:center; padding:8px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; color:var(--text-muted); display:flex; align-items:center; justify-content:center; transition:0.2s;" class="report-tab-label">
+                        <label style="flex:1; text-align:center; padding:9px 8px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-muted); display:flex; align-items:center; justify-content:center; transition:0.2s;" class="report-tab-label">
                             <input type="radio" name="reportRangeType" value="month" onchange="window.switchReportTab('month'); if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="display:none;">
                             Month
                         </label>
-                        <label style="flex:1; text-align:center; padding:8px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; color:var(--text); display:flex; align-items:center; justify-content:center; transition:0.2s;" class="report-tab-label active">
+                        <label style="flex:1; text-align:center; padding:9px 8px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); display:flex; align-items:center; justify-content:center; transition:0.2s;" class="report-tab-label active">
                             <input type="radio" name="reportRangeType" value="day" checked onchange="window.switchReportTab('day'); if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="display:none;">
                             Specific Day
                         </label>
-                        <label style="flex:1; text-align:center; padding:8px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; color:var(--text-muted); display:flex; align-items:center; justify-content:center; transition:0.2s;" class="report-tab-label">
+                        <label style="flex:1; text-align:center; padding:9px 8px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-muted); display:flex; align-items:center; justify-content:center; transition:0.2s;" class="report-tab-label">
                             <input type="radio" name="reportRangeType" value="range" onchange="window.switchReportTab('range'); if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="display:none;">
                             Custom Range
                         </label>
                     </div>
 
                     <!-- Month Input Panel -->
-                    <div id="reportMonthPanel" class="report-panel" style="margin-bottom:16px;">
-                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Select Month</label>
-                        <select id="reportMonthSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
+                    <div id="reportMonthPanel" class="report-panel" style="margin-bottom:18px;">
+                        <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Select Month</label>
+                        <select id="reportMonthSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
                     </div>
 
                     <!-- Single Day Input Panel -->
-                    <div id="reportDayPanel" class="report-panel" style="display:none; margin-bottom:16px;">
-                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Select Day</label>
-                        <input type="text" id="reportDaySelect" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;">
+                    <div id="reportDayPanel" class="report-panel" style="display:none; margin-bottom:18px;">
+                        <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Select Day</label>
+                        <input type="text" id="reportDaySelect" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;">
                     </div>
 
                     <!-- Range Input Panel -->
-                    <div id="reportRangePanel" class="report-panel" style="display:none; margin-bottom:16px;">
+                    <div id="reportRangePanel" class="report-panel" style="display:none; margin-bottom:18px;">
                         <div class="report-row" style="display:flex; gap:12px;">
                             <div style="flex:1;">
-                                <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Start Date</label>
-                                <input type="text" id="reportRangeStart" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;">
+                                <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Start Date</label>
+                                <input type="text" id="reportRangeStart" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;">
                             </div>
                             <div style="flex:1;">
-                                <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">End Date</label>
-                                <input type="text" id="reportRangeEnd" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;">
+                                <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">End Date</label>
+                                <input type="text" id="reportRangeEnd" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;">
                             </div>
                         </div>
                     </div>
 
                     <!-- Quick Period Presets -->
-                    <div style="margin-bottom:16px;">
-                        <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">Quick Period Selection</label>
+                    <div>
+                        <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Quick Period Selection</label>
                         <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('today')">Today</button>
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('yesterday')">Yesterday</button>
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('thisMonth')">This Month</button>
-                            <button type="button" class="btn" style="padding:6px 12px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('lastMonth')">Last Month</button>
+                            <button type="button" class="btn" style="padding:7px 14px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('today')">Today</button>
+                            <button type="button" class="btn" style="padding:7px 14px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('yesterday')">Yesterday</button>
+                            <button type="button" class="btn" style="padding:7px 14px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('thisMonth')">This Month</button>
+                            <button type="button" class="btn" style="padding:7px 14px; font-size:12px; font-weight:600; background:var(--surface3); border:1px solid var(--border); color:var(--text); border-radius:6px; cursor:pointer;" onclick="window.setReportPreset('lastMonth')">Last Month</button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Scope & Station Filters -->
+                <div class="reports-col-card">
+                    <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                        <i class="fas fa-sliders-h" style="color:var(--blue);"></i> Filter & Scope
                     </div>
 
                     <!-- Charger & User Selectors -->
-                    <div class="report-row" style="display:flex; gap:12px; margin-top:12px; margin-bottom:10px;">
-                        <div style="flex:1;">
-                            <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Position</label>
-                            <select id="reportChargerSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
-                        </div>
-                        <div style="flex:1;">
-                            <label class="form-label" style="display:block;font-size:11px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">User</label>
-                            <select id="reportUserSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
-                        </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Position</label>
+                        <select id="reportChargerSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
-                        <button type="button" onclick="closeReportsModal()" class="btn btn-cancel" style="padding:10px 20px;">Cancel</button>
-                        <button type="button" onclick="requestHistoryAndGenerate()" class="btn btn-save" style="display:flex; align-items:center; justify-content:center; gap:8px; height:42px; padding:0 24px; font-size:14px; font-weight:700;">
-                            <i class="fas fa-file-pdf"></i> Download PDF
-                        </button>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">User</label>
+                        <select id="reportUserSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
+                    </div>
+
+                    <!-- Overview info card -->
+                    <div style="background:var(--surface3); border:1px solid var(--border); border-radius:10px; padding:16px; margin-top:auto;">
+                        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                            <i class="fas fa-file-pdf" style="color:var(--blue);"></i> PDF Export Information
+                        </div>
+                        <div style="font-size:12px; color:var(--text-sec); line-height:1.5;">
+                            Generates an official PDF report with energy consumption (kWh), duration, RFID cards, and detailed session history.
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Action Buttons at bottom spanning full width -->
+            <div style="display:flex; justify-content:flex-end; align-items:center; gap:14px; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
+                <button type="button" onclick="closeReportsModal()" class="btn btn-cancel" style="padding:11px 24px; font-size:14px; font-weight:600;">Cancel</button>
+                <button type="button" onclick="requestHistoryAndGenerate()" class="btn btn-save" style="display:flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 30px; font-size:14px; font-weight:700;">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+            </div>
+        </div>
         </div>
     </div>
 </div>
