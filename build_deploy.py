@@ -35,8 +35,9 @@ def sync_html_to_flows():
             updated = False
             for node in flows_data:
                 if node.get("id") == "62e55f923ff54c1e":
-                    if node.get("format") != html_code:
+                    if node.get("format") != html_code or node.get("template") != html_code:
                         node["format"] = html_code
+                        node["template"] = html_code
                         updated = True
                     break
             if updated:
