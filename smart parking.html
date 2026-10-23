@@ -11610,12 +11610,9 @@
                     <i class="fas fa-file-invoice"></i>
                 </div>
                 <div>
-                    <h3 style="font-family:var(--font-head);font-size:22px;color:var(--text);font-weight:700;margin:0;">
+                    <h3 style="font-family:var(--font-head);font-size:20px;color:var(--text);font-weight:700;margin:0;">
                         System Reports & Analytics
                     </h3>
-                    <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">
-                        Export detailed energy consumption, charging duration, and session history to PDF
-                    </div>
                 </div>
             </div>
             <button type="button" onclick="closeReportsModal()" class="modal-close-btn" title="Close">✕</button>
@@ -11696,19 +11693,9 @@
                         <select id="reportChargerSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
                     </div>
 
-                    <div style="margin-bottom:18px;">
+                    <div>
                         <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">User</label>
                         <select id="reportUserSelect" class="form-input" onchange="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;"></select>
-                    </div>
-
-                    <!-- Overview info card -->
-                    <div style="background:var(--surface3); border:1px solid var(--border); border-radius:10px; padding:16px; margin-top:auto;">
-                        <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-                            <i class="fas fa-file-pdf" style="color:var(--blue);"></i> PDF Export Information
-                        </div>
-                        <div style="font-size:12px; color:var(--text-sec); line-height:1.5;">
-                            Generates an official PDF report with energy consumption (kWh), duration, RFID cards, and detailed session history.
-                        </div>
                     </div>
                 </div>
             </div>
