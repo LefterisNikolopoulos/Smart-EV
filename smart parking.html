@@ -11701,11 +11701,18 @@
             </div>
 
             <!-- Action Buttons at bottom spanning full width -->
-            <div style="display:flex; justify-content:flex-end; align-items:center; gap:14px; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
-                <button type="button" onclick="closeReportsModal()" class="btn btn-cancel" style="padding:11px 24px; font-size:14px; font-weight:600;">Cancel</button>
-                <button type="button" onclick="requestHistoryAndGenerate()" class="btn btn-save" style="display:flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 30px; font-size:14px; font-weight:700;">
-                    <i class="fas fa-file-pdf"></i> Download PDF
-                </button>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
+                <div>
+                    <button type="button" onclick="window.open('/api/kolonaki_report.pdf', '_blank')" class="btn" style="display:flex; align-items:center; gap:8px; height:44px; padding:0 20px; font-size:13px; font-weight:700; background:linear-gradient(135deg, #1e3d59 0%, #17b978 100%); color:#fff; border:none; border-radius:8px; cursor:pointer;" title="Download Official Kolonaki 8-Page Executive PDF">
+                        <i class="fas fa-file-invoice"></i> Executive 8-Page Report (Kolonaki)
+                    </button>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button type="button" onclick="closeReportsModal()" class="btn btn-cancel" style="padding:11px 24px; font-size:14px; font-weight:600;">Cancel</button>
+                    <button type="button" onclick="requestHistoryAndGenerate()" class="btn btn-save" style="display:flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 30px; font-size:14px; font-weight:700;">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
+                </div>
             </div>
         </div>
         </div>
@@ -12027,11 +12034,12 @@
                     <thead>
                         <tr>
                             <th style="width:36px;" title="Drag to reorder"></th>
-                            <th style="width:24%;">CARD ID</th>
-                            <th style="width:24%;">NAME</th>
-                            <th style="width:24%;">CHARGER ID</th>
-                            <th class="admin-pin-col" style="width:18%;">PIN</th>
-                            <th style="width:10%;text-align:right;"></th>
+                            <th style="width:20%;">CARD ID</th>
+                            <th style="width:20%;">NAME</th>
+                            <th style="width:20%;">COMPANY / TENANT</th>
+                            <th style="width:18%;">CHARGER ID</th>
+                            <th class="admin-pin-col" style="width:14%;">PIN</th>
+                            <th style="width:8%;text-align:right;"></th>
                         </tr>
                     </thead>
                     <tbody id="adminUsersList"></tbody>
@@ -13145,13 +13153,14 @@
         refreshAllModalDropdowns();
     }
 
-    function addAdminUserRow(cid = '', n = '', ch = '', pin = '') {
+    function addAdminUserRow(cid = '', n = '', co = '', ch = '', pin = '') {
         var tr = document.createElement('tr');
         tr.className = 'admin-us-row';
         tr.innerHTML =
             '<td class="admin-us-drag" draggable="true" style="text-align:center;color:var(--text-muted);cursor:grab;user-select:none;" title="Drag to reorder"><i class="fa fa-grip-vertical"></i></td>' +
             '<td data-label="Card ID">' + buildInput(cid, 'A0B1C2D3E4', true) + '</td>' +
             '<td data-label="Name">' + buildInput(n, 'e.g. John') + '</td>' +
+            '<td data-label="Company">' + buildInput(co, 'e.g. Company A') + '</td>' +
             '<td data-label="Charger ID">' + buildMultiselect(ch) + '</td>' +
             '<td class="admin-pin-col" data-label="PIN"><div style="position:relative;display:flex;align-items:center;"><input type="password" maxlength="4" value="' + (pin || '') + '" placeholder="e.g. 1234" style="width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 30px 8px 8px;border-radius:6px;font-family:Barlow,sans-serif;" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" spellcheck="false" oninput="this.value=this.value.replace(/[^0-9]/g,\'\')" /><button type="button" onclick="togglePasswordVisibility(null, this)" style="position:absolute;right:6px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;padding:2px;display:flex;align-items:center;" title="Toggle Visibility"><i class="fa fa-eye"></i></button></div></td>' +
             '<td style="text-align:right;"><button type="button" data-action="delete-row"><i class="fa fa-trash"></i></button></td>';
@@ -13216,7 +13225,7 @@
             addAdminChargerRow();
         }
 
-        for (var k in u) addAdminUserRow(k, u[k].name, u[k].charger, u[k].pin || '');
+        for (var k in u) addAdminUserRow(k, u[k].name, u[k].company || '', u[k].charger, u[k].pin || '');
         if (Object.keys(u).length === 0) addAdminUserRow();
         initAdminUsersDragDrop();
 
@@ -13462,8 +13471,9 @@
             }
             cardIdsSeen[cid] = true;
 
-            var chosenCharger = ins[2].value.trim();
-            var pinVal = ins[3] ? ins[3].value.trim() : '';
+            var chosenCharger = ins[3] ? ins[3].value.trim() : '';
+            var pinVal = ins[4] ? ins[4].value.trim() : '';
+            var companyVal = ins[2] ? ins[2].value.trim() : '';
             var z = '';
             var s = 1;
 
@@ -13475,6 +13485,7 @@
 
             conf.USERS[cid] = {
                 name: ins[1].value.trim(),
+                company: companyVal,
                 charger: chosenCharger,
                 zone: z,
                 spot: s,

@@ -50,7 +50,8 @@
       "zone": "",
       "spot": 1,
       "pin": "1234",
-      "isAdmin": false
+      "isAdmin": false,
+      "company": "Εταιρία Α (Alpha Corp)"
     },
     "D3D8C70003": {
       "name": "Admin User",
@@ -58,7 +59,8 @@
       "zone": "1A",
       "spot": 1,
       "pin": "4321",
-      "isAdmin": false
+      "isAdmin": false,
+      "company": "Διαχείριση Κτιρίου"
     },
     "0401020304": {
       "name": "Go-E User 1",
@@ -66,7 +68,8 @@
       "zone": "1A",
       "spot": 2,
       "pin": "1234",
-      "isAdmin": false
+      "isAdmin": false,
+      "company": "Εταιρία Β (Beta Tech)"
     },
     "8DD4C70003": {
       "name": "Go-E User 2",
@@ -74,7 +77,8 @@
       "zone": "1A",
       "spot": 2,
       "pin": "1234",
-      "isAdmin": false
+      "isAdmin": false,
+      "company": "Εταιρία Β (Beta Tech)"
     },
     "99D4C70003": {
       "name": "Easee User 1",
@@ -82,7 +86,8 @@
       "zone": "1A",
       "spot": 2,
       "pin": "1234",
-      "isAdmin": false
+      "isAdmin": false,
+      "company": "Εταιρία Γ (Gamma Ltd)"
     },
     "5561CA0003": {
       "name": "Easee User 2",
@@ -90,7 +95,8 @@
       "zone": "2A",
       "spot": 1,
       "pin": "1234",
-      "isAdmin": false
+      "isAdmin": false,
+      "company": "Εταιρία Γ (Gamma Ltd)"
     }
   },
   "TOTAL_POWER": 22,

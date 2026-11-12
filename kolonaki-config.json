@@ -1,0 +1,101 @@
+{
+  "PROJECT": {
+    "name": "Kolonaki International Center",
+    "address": "Βασιλίσσης Σοφίας 23Α, Αθήνα",
+    "transformer_kva": 850,
+    "dlc_target_kw": 420.0,
+    "tariff_eur_per_kwh": 0.20,
+    "total_chargers": 36,
+    "charger_nominal_power_kw": 11.0,
+    "levels": ["-1", "-2", "-3"],
+    "distribution_breaker_amp": 250
+  },
+  "FLOORS": [
+    {
+      "id": "-1",
+      "name": "Επίπεδο -1",
+      "main_panel": "Π1",
+      "satellite_panel": "Δ1",
+      "chargers_count": 12,
+      "meter_main": "M-1",
+      "meter_satellite": "M-1Δ"
+    },
+    {
+      "id": "-2",
+      "name": "Επίπεδο -2",
+      "main_panel": "Π1",
+      "satellite_panel": "Δ1",
+      "chargers_count": 12,
+      "meter_main": "M-2",
+      "meter_satellite": "M-2Δ"
+    },
+    {
+      "id": "-3",
+      "name": "Επίπεδο -3",
+      "main_panel": "Π1",
+      "satellite_panel": "Δ1",
+      "chargers_count": 12,
+      "meter_main": "M-3",
+      "meter_satellite": "M-3Δ"
+    }
+  ],
+  "COMPANIES": {
+    "Εταιρία Α": { "code": "A", "chargers_count": 6, "cards_count": 11 },
+    "Εταιρία Β": { "code": "B", "chargers_count": 7, "cards_count": 14 },
+    "Εταιρία Γ": { "code": "C", "chargers_count": 5, "cards_count": 11 },
+    "Εταιρία Δ": { "code": "D", "chargers_count": 4, "cards_count": 7 },
+    "Εταιρία Ε": { "code": "E", "chargers_count": 4, "cards_count": 9 },
+    "Εταιρία ΣΤ": { "code": "ST", "chargers_count": 4, "cards_count": 11 },
+    "Εταιρία Ζ": { "code": "Z", "chargers_count": 3, "cards_count": 4 },
+    "Διαχείριση κτιρίου": { "code": "MGT", "chargers_count": 3, "cards_count": 4 }
+  },
+  "CHARGERS": {
+    "-1/Π1/01": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "01", "company": "Εταιρία Γ", "max_kw": 11, "cards_assigned": 3 },
+    "-1/Π1/02": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "02", "company": "Εταιρία Α", "max_kw": 11, "cards_assigned": 1 },
+    "-1/Π1/03": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "03", "company": "Εταιρία Ε", "max_kw": 11, "cards_assigned": 1 },
+    "-1/Π1/04": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "04", "company": "Εταιρία Δ", "max_kw": 11, "cards_assigned": 1 },
+    "-1/Π1/05": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "05", "company": "Εταιρία Β", "max_kw": 11, "cards_assigned": 2 },
+    "-1/Π1/06": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "06", "company": "Εταιρία Γ", "max_kw": 11, "cards_assigned": 3 },
+    "-1/Π1/07": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "07", "company": "Εταιρία Δ", "max_kw": 11, "cards_assigned": 2 },
+    "-1/Π1/08": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "08", "company": "Εταιρία Β", "max_kw": 11, "cards_assigned": 1 },
+    "-1/Π1/09": { "level": "-1", "panel": "Πεδία Διανομής Π1", "circuit": "09", "company": "Εταιρία Δ", "max_kw": 11, "cards_assigned": 2 },
+    "-1/Δ1/10": { "level": "-1", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "10", "company": "Εταιρία Β", "max_kw": 11, "cards_assigned": 2 },
+    "-1/Δ1/11": { "level": "-1", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "11", "company": "Εταιρία Β", "max_kw": 11, "cards_assigned": 3 },
+    "-1/Δ1/12": { "level": "-1", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "12", "company": "Εταιρία Γ", "max_kw": 11, "cards_assigned": 2 },
+
+    "-2/Π1/01": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "01", "company": "Εταιρία ΣΤ", "max_kw": 11, "cards_assigned": 2 },
+    "-2/Π1/02": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "02", "company": "Εταιρία Γ", "max_kw": 11, "cards_assigned": 2 },
+    "-2/Π1/03": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "03", "company": "Εταιρία Β", "max_kw": 11, "cards_assigned": 2 },
+    "-2/Π1/04": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "04", "company": "Εταιρία Α", "max_kw": 11, "cards_assigned": 1 },
+    "-2/Π1/05": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "05", "company": "Εταιρία Ζ", "max_kw": 11, "cards_assigned": 2 },
+    "-2/Π1/06": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "06", "company": "Εταιρία Γ", "max_kw": 11, "cards_assigned": 1 },
+    "-2/Π1/07": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "07", "company": "Εταιρία Ε", "max_kw": 11, "cards_assigned": 2 },
+    "-2/Π1/08": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "08", "company": "Εταιρία Β", "max_kw": 11, "cards_assigned": 2 },
+    "-2/Π1/09": { "level": "-2", "panel": "Πεδία Διανομής Π1", "circuit": "09", "company": "Εταιρία Α", "max_kw": 11, "cards_assigned": 1 },
+    "-2/Δ1/10": { "level": "-2", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "10", "company": "Εταιρία Α", "max_kw": 11, "cards_assigned": 2 },
+    "-2/Δ1/11": { "level": "-2", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "11", "company": "Διαχείριση κτιρίου", "max_kw": 11, "cards_assigned": 1, "fault_event": "RCBO trip 16/10 10:00-16:00" },
+    "-2/Δ1/12": { "level": "-2", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "12", "company": "Εταιρία Α", "max_kw": 11, "cards_assigned": 3 },
+
+    "-3/Π1/01": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "01", "company": "Εταιρία Β", "max_kw": 11, "cards_assigned": 2 },
+    "-3/Π1/02": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "02", "company": "Εταιρία Ε", "max_kw": 11, "cards_assigned": 3 },
+    "-3/Π1/03": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "03", "company": "Εταιρία Α", "max_kw": 11, "cards_assigned": 3 },
+    "-3/Π1/04": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "04", "company": "Εταιρία Ζ", "max_kw": 11, "cards_assigned": 1 },
+    "-3/Π1/05": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "05", "company": "Εταιρία ΣΤ", "max_kw": 11, "cards_assigned": 3 },
+    "-3/Π1/06": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "06", "company": "Διαχείριση κτιρίου", "max_kw": 11, "cards_assigned": 1 },
+    "-3/Π1/07": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "07", "company": "Εταιρία Ε", "max_kw": 11, "cards_assigned": 3 },
+    "-3/Π1/08": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "08", "company": "Εταιρία ΣΤ", "max_kw": 11, "cards_assigned": 3 },
+    "-3/Π1/09": { "level": "-3", "panel": "Πεδία Διανομής Π1", "circuit": "09", "company": "Εταιρία Ζ", "max_kw": 11, "cards_assigned": 1 },
+    "-3/Δ1/10": { "level": "-3", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "10", "company": "Εταιρία ΣΤ", "max_kw": 11, "cards_assigned": 3 },
+    "-3/Δ1/11": { "level": "-3", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "11", "company": "Εταιρία Δ", "max_kw": 11, "cards_assigned": 2 },
+    "-3/Δ1/12": { "level": "-3", "panel": "Δορυφορικό Πεδίο Δ1", "circuit": "12", "company": "Διαχείριση κτιρίου", "max_kw": 11, "cards_assigned": 2 }
+  },
+  "LEGRAND_METERS": {
+    "M-0": { "name": "Γενική παροχή κτιρίου", "location": "Πεδίο Χ.Τ.", "level": "Ισόγειο/Γενικό", "monthly_kwh": 120955 },
+    "M-1": { "name": "Πεδίο Διανομής Φόρτισης -1", "location": "Επίπεδο -1", "level": "-1", "monthly_kwh": 3216, "notes": "Περιλαμβάνει και τα δορυφορικά πεδία" },
+    "M-2": { "name": "Πεδίο Διανομής Φόρτισης -2", "location": "Επίπεδο -2", "level": "-2", "monthly_kwh": 2986, "notes": "Περιλαμβάνει και τα δορυφορικά πεδία" },
+    "M-3": { "name": "Πεδίο Διανομής Φόρτισης -3", "location": "Επίπεδο -3", "level": "-3", "monthly_kwh": 3395, "notes": "Περιλαμβάνει και τα δορυφορικά πεδία" },
+    "M-1Δ": { "name": "Δορυφορικό Πεδίο -1", "location": "Επίπεδο -1", "level": "-1", "monthly_kwh": 652 },
+    "M-2Δ": { "name": "Δορυφορικό Πεδίο -2", "location": "Επίπεδο -2", "level": "-2", "monthly_kwh": 518 },
+    "M-3Δ": { "name": "Δορυφορικό Πεδίο -3", "location": "Επίπεδο -3", "level": "-3", "monthly_kwh": 983 }
+  }
+}
