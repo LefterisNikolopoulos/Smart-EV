@@ -11191,7 +11191,18 @@
         var tEl = document.getElementById('gridDonutPct');
         if (!pEl || !tEl) return;
 
-        var limit = Number(limitVal) || window.currentPhaseLimitAmp || (window.currentSmartConfig && window.currentSmartConfig.DLB_PHASE_LIMIT_AMP) || 29.0;
+        // The DLB Limit is strictly the per-phase limit in Amperes (default 29.0A)
+        var limitAmp = window.currentPhaseLimitAmp || (window.currentSmartConfig && window.currentSmartConfig.DLB_PHASE_LIMIT_AMP) || 29.0;
+        if (limitVal !== undefined && limitVal !== null) {
+            var num = Number(limitVal);
+            if (!isNaN(num) && num >= 6 && num <= 63) {
+                if (!window.currentPhaseLimitAmp) {
+                    limitAmp = num;
+                }
+            }
+        }
+        limitAmp = Number(limitAmp) || 29.0;
+
         var current = 0;
         if (window.lastShellyData && window.lastShellyData.status) {
             var ga = Number(window.lastShellyData.status.a_current) || 0;
@@ -11202,14 +11213,14 @@
             current = (Number(currentKw) * 1000.0) / (3.0 * 230.0);
         }
 
-        if (!limit || limit <= 0) {
+        if (!limitAmp || limitAmp <= 0) {
             tEl.textContent = '--%';
             pEl.style.strokeDashoffset = '100';
             pEl.style.stroke = '#00d68f';
             return;
         }
 
-        var pct = Math.round((current / limit) * 100);
+        var pct = Math.round((current / limitAmp) * 100);
         var clampedPct = Math.min(100, Math.max(0, pct));
         var offset = 100 - clampedPct;
         pEl.style.strokeDashoffset = offset.toString();
@@ -11249,7 +11260,7 @@
                 if (elAprt) elAprt.textContent = totalAprt.toFixed(0);
                 if (elReact) elReact.textContent = totalReact.toFixed(0);
                 if (window.updateGridDonut) {
-                    window.updateGridDonut(totalPwrKw, window.currentTotalPower);
+                    window.updateGridDonut(totalPwrKw, window.currentPhaseLimitAmp || 29.0);
                 }
 
                 // Update Modal elements
@@ -11446,20 +11457,29 @@
             }
 
             if (data.type === 'global_limit_update') {
-                window.currentTotalPower = data.limit;
+                if (data.limitAmp) {
+                    window.currentPhaseLimitAmp = Number(data.limitAmp);
+                } else if (data.limit) {
+                    var l = Number(data.limit);
+                    window.currentPhaseLimitAmp = (l > 63) ? Math.round((l * 1000.0) / (3.0 * 230.0)) : l;
+                }
+                var pLimit = window.currentPhaseLimitAmp || 29.0;
+                var limitKw = Number(((pLimit * 3.0 * 230.0) / 1000.0).toFixed(1));
+                window.currentTotalPower = limitKw;
                 var curKw = window.lastShellyData && window.lastShellyData.status ? (Number(window.lastShellyData.status.total_act_power) || 0) / 1000.0 : 0;
-                if (window.updateGridDonut) window.updateGridDonut(curKw, data.limit);
+                if (window.updateGridDonut) window.updateGridDonut(curKw, pLimit);
                 var lt = document.getElementById('globalPowerLimitTxt');
-                if (lt) lt.innerHTML = ' / ' + data.limit;
+                if (lt) lt.innerHTML = ' / ' + limitKw;
                 var mlt = document.getElementById('shellyModalLimitTxt');
-                if (mlt) mlt.textContent = data.limit;
+                if (mlt) mlt.textContent = pLimit;
                 var minp = document.getElementById('shellyModalLimitInput');
-                if (minp) minp.value = data.limit;
+                if (minp) minp.value = pLimit;
                 var linp = document.getElementById('limitInput');
-                if (linp) linp.value = data.limit;
+                if (linp) linp.value = pLimit;
                 if (window.currentSmartConfig) {
-                    window.currentSmartConfig.TOTAL_POWER = data.limit;
-                    window.currentSmartConfig.maxPower = data.limit;
+                    window.currentSmartConfig.DLB_PHASE_LIMIT_AMP = pLimit;
+                    window.currentSmartConfig.TOTAL_POWER = limitKw;
+                    window.currentSmartConfig.maxPower = limitKw;
                 }
                 return;
             }
@@ -11593,20 +11613,20 @@
                     if (!window.currentSmartConfig.USERS) window.currentSmartConfig.USERS = {};
                     if (!window.currentSmartConfig.FLOORS) window.currentSmartConfig.FLOORS = [];
 
-                    var limitVal = _c.TOTAL_POWER || _c.maxPower;
-                    if (limitVal) {
-                        window.currentTotalPower = limitVal;
-                        var curKw = window.lastShellyData && window.lastShellyData.status ? (Number(window.lastShellyData.status.total_act_power) || 0) / 1000.0 : 0;
-                        if (window.updateGridDonut) window.updateGridDonut(curKw, limitVal);
-                        var lt = document.getElementById('globalPowerLimitTxt');
-                        if (lt) lt.innerHTML = ' / ' + limitVal;
-                        var mlt = document.getElementById('shellyModalLimitTxt');
-                        if (mlt) mlt.textContent = limitVal;
-                        var minp = document.getElementById('shellyModalLimitInput');
-                        if (minp) minp.value = limitVal;
-                        var linp = document.getElementById('limitInput');
-                        if (linp) linp.value = limitVal;
-                    }
+                    var curAmpLimit = Number(_c.DLB_PHASE_LIMIT_AMP) || 29.0;
+                    window.currentPhaseLimitAmp = curAmpLimit;
+                    var limitKw = Number(((curAmpLimit * 3.0 * 230.0) / 1000.0).toFixed(1));
+                    window.currentTotalPower = limitKw;
+                    var curKw = window.lastShellyData && window.lastShellyData.status ? (Number(window.lastShellyData.status.total_act_power) || 0) / 1000.0 : 0;
+                    if (window.updateGridDonut) window.updateGridDonut(curKw, curAmpLimit);
+                    var lt = document.getElementById('globalPowerLimitTxt');
+                    if (lt) lt.innerHTML = ' / ' + limitKw;
+                    var mlt = document.getElementById('shellyModalLimitTxt');
+                    if (mlt) mlt.textContent = curAmpLimit;
+                    var minp = document.getElementById('shellyModalLimitInput');
+                    if (minp) minp.value = curAmpLimit;
+                    var linp = document.getElementById('limitInput');
+                    if (linp) linp.value = curAmpLimit;
 
                     applyFloorsFromSmartConfig(window.currentSmartConfig);
                     rebuildParkingData();
