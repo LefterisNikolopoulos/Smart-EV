@@ -11129,8 +11129,9 @@
                 var elDlbAvail = document.getElementById('dlbAvailableAmp');
                 if (elDlbAvail) elDlbAvail.textContent = dlbAvail.toFixed(1) + ' A';
 
+                var limitKw = Number(((phaseLimit * 3.0 * 230.0) / 1000.0).toFixed(1));
                 var lt = document.getElementById('globalPowerLimitTxt');
-                if (lt) lt.innerHTML = ' / ' + phaseLimit + 'A';
+                if (lt) lt.innerHTML = ' / ' + limitKw;
 
                 updateGridStatus();
                 return;
@@ -11143,16 +11144,18 @@
                 if (elAvail && data.availableAmp !== undefined) {
                     elAvail.textContent = Number(data.availableAmp).toFixed(1) + ' A';
                 }
+                var pLimit = data.limitAmp || window.currentPhaseLimitAmp || 29.0;
+                var limitKw = Number(((pLimit * 3.0 * 230.0) / 1000.0).toFixed(1));
                 var lt = document.getElementById('globalPowerLimitTxt');
-                if (lt && data.limitAmp) {
-                    lt.innerHTML = ' / ' + data.limitAmp + 'A';
+                if (lt) {
+                    lt.innerHTML = ' / ' + limitKw;
                 }
                 var minp = document.getElementById('shellyModalLimitInput');
                 if (minp && data.limitAmp) minp.value = data.limitAmp;
                 var linp = document.getElementById('limitInput');
                 if (linp && data.limitAmp) linp.value = data.limitAmp;
                 if (window.updateGridDonut) {
-                    window.updateGridDonut(null, data.limitAmp);
+                    window.updateGridDonut(null, pLimit);
                 }
                 return;
             }
@@ -13446,16 +13449,17 @@
                 return;
             }
             window.currentPhaseLimitAmp = val;
+            var limitKw = Number(((val * 3.0 * 230.0) / 1000.0).toFixed(1));
             var lt = document.getElementById('globalPowerLimitTxt');
-            if (lt) lt.innerHTML = ' / ' + val + 'A';
+            if (lt) lt.innerHTML = ' / ' + limitKw;
             var mlt = document.getElementById('shellyModalLimitTxt');
             if (mlt) mlt.textContent = val;
             var linp = document.getElementById('limitInput');
             if (linp) linp.value = val;
             if (window.currentSmartConfig) {
                 window.currentSmartConfig.DLB_PHASE_LIMIT_AMP = val;
-                window.currentSmartConfig.TOTAL_POWER = Number(((val * 3 * 230) / 1000).toFixed(1));
-                window.currentSmartConfig.maxPower = window.currentSmartConfig.TOTAL_POWER;
+                window.currentSmartConfig.TOTAL_POWER = limitKw;
+                window.currentSmartConfig.maxPower = limitKw;
             }
             if (window.updateGridDonut) {
                 window.updateGridDonut(null, val);
@@ -13478,8 +13482,9 @@
         var limit = parseFloat(input.value);
         if (!isNaN(limit) && limit >= 6 && limit <= 63) {
             window.currentPhaseLimitAmp = limit;
+            var limitKw = Number(((limit * 3.0 * 230.0) / 1000.0).toFixed(1));
             var lt = document.getElementById('globalPowerLimitTxt');
-            if (lt) lt.innerHTML = ' / ' + limit + 'A';
+            if (lt) lt.innerHTML = ' / ' + limitKw;
             var minp = document.getElementById('shellyModalLimitInput');
             if (minp) minp.value = limit;
             if (window.currentSmartConfig) {
