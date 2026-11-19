@@ -7415,11 +7415,39 @@
                         <div class="kpi-label">Solar Power</div>
                     </div>
                 </div>
-                <!-- Shelly Grid Meter KPI Pill (with Live Power Donut) -->
-                <div class="kpi-pill grid-kpi-pill" id="shellyKpiCard"
+                <!-- Main Grid Power (kW) KPI Pill with Live Donut -->
+                <div class="kpi-pill grid-kpi-pill" id="shellyPowerKpiCard"
                     onclick="window.openShellyModal()" style="cursor:pointer;"
                     title="Click for Grid & Power details">
-                    <div class="grid-donut-wrap" title="Grid Utilization %">
+                    <div class="grid-donut-wrap" title="Grid Power Utilization % (relative to total kW limit)">
+                        <svg class="grid-donut-svg" viewBox="0 0 36 36">
+                            <path class="grid-donut-bg"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="gridPowerDonutProgress" class="grid-donut-progress"
+                                stroke-dasharray="100"
+                                stroke-dashoffset="100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span id="gridPowerDonutPct" class="grid-donut-text">0%</span>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-val">
+                            <span id="shellyPower">0.00</span><span id="globalPowerLimitTxt" class="kpi-limit-dim"> / -</span><span class="kpi-unit">kW</span>
+                        </div>
+                        <div class="kpi-sub shelly-kpi-status">
+                            <span title="Apparent Power"><span id="shellyAprt">0</span> VA</span>
+                            <span class="kpi-sep">•</span>
+                            <span title="Reactive Power (Q)"><span id="shellyReact">0</span> var</span>
+                        </div>
+                        <div class="kpi-label">Main Grid Power</div>
+                    </div>
+                </div>
+
+                <!-- Main Grid Current (Ampere) KPI Pill with DLB Phase Donut -->
+                <div class="kpi-pill grid-kpi-pill" id="shellyKpiCard"
+                    onclick="window.openShellyModal()" style="cursor:pointer;"
+                    title="Click for Phase Currents & DLB Limit">
+                    <div class="grid-donut-wrap" title="DLB Phase Load % (relative to 29A fuse limit)">
                         <svg class="grid-donut-svg" viewBox="0 0 36 36">
                             <path class="grid-donut-bg"
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -7432,14 +7460,12 @@
                     </div>
                     <div class="kpi-content">
                         <div class="kpi-val">
-                            <span id="shellyPower">0.00</span><span id="globalPowerLimitTxt" class="kpi-limit-dim"> / -</span><span class="kpi-unit">kW</span>
+                            <span id="shellyMaxAmp">0.0</span><span class="kpi-limit-dim"> / <span id="shellyPhaseLimitAmpTxt">29</span></span><span class="kpi-unit">A</span>
                         </div>
-                        <div class="kpi-sub shelly-kpi-status">
-                            <span title="Apparent Power"><span id="shellyAprt">0</span> VA</span>
-                            <span class="kpi-sep">•</span>
-                            <span title="Reactive Power (Q)"><span id="shellyReact">0</span> var</span>
+                        <div class="kpi-sub shelly-kpi-status" title="Phase Currents (A)">
+                            <span id="shellyPhaseSummary">L1: 0.0A • L2: 0.0A • L3: 0.0A</span>
                         </div>
-                        <div class="kpi-label">Main Grid Load</div>
+                        <div class="kpi-label">Main Grid Current</div>
                     </div>
                 </div>
                 <!-- Cars EV Power KPI Pill -->
@@ -11180,37 +11206,66 @@
             }
         }
 
-        scope.$watch('msg', function (msg) {
-            if (!msg || !msg.payload) return;
-            var data = msg.payload;
+    // Update Main Grid Power Gauge / Donut (Power Load relative to Total kW Limit)
+    window.updateGridPowerDonut = function (totalKw, limitKw) {
+        var pEl = document.getElementById('gridPowerDonutProgress');
+        var tEl = document.getElementById('gridPowerDonutPct');
+        if (!pEl || !tEl) return;
 
-            
-    // Update Main Grid Gauge / Donut (Phase Load relative to 29A DLB Limit)
-    window.updateGridDonut = function (currentKw, limitVal) {
+        var phaseLimit = window.currentPhaseLimitAmp || (window.currentSmartConfig && window.currentSmartConfig.DLB_PHASE_LIMIT_AMP) || 29.0;
+        var equivKw = Number(((phaseLimit * 3.0 * 230.0) / 1000.0).toFixed(1));
+        var limit = Number(limitKw) || window.currentTotalPower || equivKw || 20.0;
+        var current = Number(totalKw) || 0;
+
+        if (!limit || limit <= 0) {
+            tEl.textContent = '--%';
+            pEl.style.strokeDashoffset = '100';
+            pEl.style.stroke = '#00d68f';
+            return;
+        }
+
+        var pct = Math.round((current / limit) * 100);
+        var clampedPct = Math.min(100, Math.max(0, pct));
+        var offset = 100 - clampedPct;
+        pEl.style.strokeDashoffset = offset.toString();
+        tEl.textContent = pct + '%';
+
+        if (pct >= 95) {
+            pEl.style.stroke = '#ef4444';
+            pEl.style.filter = 'drop-shadow(0 0 5px rgba(239, 68, 68, 0.6))';
+        } else if (pct >= 80) {
+            pEl.style.stroke = '#f59e0b';
+            pEl.style.filter = 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.4))';
+        } else {
+            pEl.style.stroke = '#00d68f';
+            pEl.style.filter = 'drop-shadow(0 0 4px rgba(0, 214, 143, 0.3))';
+        }
+    };
+
+    // Update Main Grid Current Gauge / Donut (Phase Load relative to 29A DLB Limit)
+    window.updateGridDonut = function (currentAmpVal, limitAmpVal) {
         var pEl = document.getElementById('gridDonutProgress');
         var tEl = document.getElementById('gridDonutPct');
         if (!pEl || !tEl) return;
 
         // The DLB Limit is strictly the per-phase limit in Amperes (default 29.0A)
         var limitAmp = window.currentPhaseLimitAmp || (window.currentSmartConfig && window.currentSmartConfig.DLB_PHASE_LIMIT_AMP) || 29.0;
-        if (limitVal !== undefined && limitVal !== null) {
-            var num = Number(limitVal);
+        if (limitAmpVal !== undefined && limitAmpVal !== null) {
+            var num = Number(limitAmpVal);
             if (!isNaN(num) && num >= 6 && num <= 63) {
-                if (!window.currentPhaseLimitAmp) {
-                    limitAmp = num;
-                }
+                limitAmp = num;
             }
         }
         limitAmp = Number(limitAmp) || 29.0;
 
         var current = 0;
-        if (window.lastShellyData && window.lastShellyData.status) {
+        if (currentAmpVal !== undefined && currentAmpVal !== null && !isNaN(currentAmpVal)) {
+            current = Number(currentAmpVal);
+        } else if (window.lastShellyData && window.lastShellyData.status) {
             var ga = Number(window.lastShellyData.status.a_current) || 0;
             var gb = Number(window.lastShellyData.status.b_current) || 0;
             var gc = Number(window.lastShellyData.status.c_current) || 0;
             current = Math.max(ga, gb, gc);
-        } else if (currentKw !== null && currentKw !== undefined) {
-            current = (Number(currentKw) * 1000.0) / (3.0 * 230.0);
         }
 
         if (!limitAmp || limitAmp <= 0) {
@@ -11237,6 +11292,11 @@
             pEl.style.filter = 'drop-shadow(0 0 4px rgba(0, 214, 143, 0.3))';
         }
     };
+
+        if (typeof scope !== 'undefined' && scope && typeof scope.$watch === 'function') {
+        scope.$watch('msg', function (msg) {
+            if (!msg || !msg.payload) return;
+            var data = msg.payload;
 
             
             // Handle Shelly Pro 3EM updates
@@ -11859,6 +11919,7 @@
                 }, 100);
             }
         });
+        }
 
         updateDate();
         var isStaticPreview = window.location.protocol === 'file:';
