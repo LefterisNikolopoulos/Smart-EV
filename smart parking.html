@@ -5979,8 +5979,28 @@
         gap: 6px;
     }
 
+    .flatpickr-wrapper {
+        position: relative !important;
+        display: block !important;
+        width: 100% !important;
+    }
+
     .flatpickr-calendar {
         z-index: 100005 !important;
+    }
+
+    .flatpickr-calendar.static {
+        position: absolute !important;
+        top: calc(100% + 4px) !important;
+        left: 0 !important;
+        width: 308px !important;
+    }
+
+    .flatpickr-calendar.static.open {
+        z-index: 100005 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     /* Admin tabbed navigation styles */
@@ -7264,11 +7284,14 @@
         <div class="modal" style="text-align:center; max-width: 300px; padding: 25px;">
             <h3 style="margin-bottom:12px;font-family:var(--font-head);font-size:18px;">Dynamic Load Balancing</h3>
             <div style="font-size:14px; margin-bottom:20px; color:var(--text-dim); line-height: 1.4;">
-                Enter new Building Power Limit (in kW)
+                Enter new Phase Current Limit (in Amperes - default 29 A)
             </div>
-            <input type="number" id="limitInput"
-                style="font-size: 24px; text-align: center; width: 120px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-weight: bold; font-family:var(--font-data);"
-                min="6" step="1">
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                <input type="number" id="limitInput" value="29"
+                    style="font-size: 24px; text-align: center; width: 120px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-weight: bold; font-family:var(--font-data);"
+                    min="6" max="63" step="1">
+                <span style="font-size:18px; font-weight:700; color:var(--text-dim);">A</span>
+            </div>
             <div style="margin-top:25px; display:flex; gap:10px; justify-content:center;">
                 <button class="btn" style="background:transparent; border: 1px solid var(--border); color:var(--text);"
                     onclick="document.getElementById('limitModal').classList.remove('open')">Cancel</button>
@@ -7512,7 +7535,8 @@
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                     <span
                         style="font-family: var(--font-head); font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: 0.3px;">DLB
-                        Limit</span>
+                        Phase Limit</span>
+                    <span style="font-size: 11px; color: var(--text-dim);">Max Grid Fuse per Phase</span>
                 </div>
                 <div class="dlb-modal-controls">
                     <div
@@ -7523,7 +7547,7 @@
                             onmouseout="this.style.background='transparent'">
                             <i class="fas fa-minus" style="font-size: 9px; color: var(--text-dim);"></i>
                         </button>
-                        <input type="number" id="shellyModalLimitInput" value="20" min="5" max="150" step="0.5"
+                        <input type="number" id="shellyModalLimitInput" value="29" min="6" max="63" step="1"
                             style="width: 45px; height: 28px; background: transparent; border: none; color: #06b6d4; text-align: center; font-family: var(--font-data); font-size: 14px; font-weight: 700; outline: none; appearance: textfield; -moz-appearance: textfield;">
                         <button onclick="incrementModalLimit()"
                             style="background: transparent; border: none; color: var(--text); width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 6px; transition: background 0.2s;"
@@ -7532,12 +7556,23 @@
                             <i class="fas fa-plus" style="font-size: 9px; color: var(--text-dim);"></i>
                         </button>
                     </div>
-                    <span style="font-size: 12px; font-weight: 700; color: var(--text-dim); margin: 0 4px;">kW</span>
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text-dim); margin: 0 4px;">A</span>
                     <button onclick="saveModalLimit(event)"
                         style="background: #06b6d4; border: none; color: #fff; padding: 0 14px; height: 32px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);"
                         onmouseover="this.style.background='#0891b2'" onmouseout="this.style.background='#06b6d4'">
                         Save
                     </button>
+                </div>
+            </div>
+
+            <!-- Available for EV Charging Card -->
+            <div style="background: rgba(0, 214, 143, 0.08); border: 1px solid rgba(0, 214, 143, 0.25); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); font-weight: 600; letter-spacing: 0.05em;">Available for EV (29A - Grid)</div>
+                    <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Surplus Phase Amperage for Charging</div>
+                </div>
+                <div style="text-align: right;">
+                    <span id="dlbAvailableAmp" style="font-family: var(--font-data); font-size: 20px; font-weight: 700; color: #00d68f;">29.0 A</span>
                 </div>
             </div>
 
@@ -8299,6 +8334,7 @@
             if (r) { r.checked = true; window.switchReportTab("day"); }
             var inp = document.getElementById("reportDaySelect");
             if (inp) inp.value = fmt(today);
+            if (window.pickerDay) window.pickerDay.setDate(today, false);
         } else if (preset === "yesterday") {
             var yest = new Date(today);
             yest.setDate(yest.getDate() - 1);
@@ -8306,6 +8342,7 @@
             if (r) { r.checked = true; window.switchReportTab("day"); }
             var inp = document.getElementById("reportDaySelect");
             if (inp) inp.value = fmt(yest);
+            if (window.pickerDay) window.pickerDay.setDate(yest, false);
         } else if (preset === "thisMonth") {
             var r = document.querySelector('input[name="reportRangeType"][value="month"]');
             if (r) { r.checked = true; window.switchReportTab("month"); }
@@ -8366,6 +8403,12 @@
             }
         }
 
+        // Show modal and activate tab before flatpickr initialization so dimensions are fully measured
+        document.getElementById('reportsModal').style.display = 'flex';
+        var activeRadio = document.querySelector('input[name="reportRangeType"]:checked');
+        var activeType = activeRadio ? activeRadio.value : 'day';
+        window.switchReportTab(activeType);
+
         // Initialize flatpickr on the inputs for perfect DD/MM/YYYY formatting
         if (window.flatpickr) {
             try {
@@ -8384,21 +8427,33 @@
                 }
             } catch (e) { }
 
-            window.pickerDay = flatpickr("#reportDaySelect", { dateFormat: "d/m/Y", defaultDate: "today", disableMobile: true });
-            window.pickerStart = flatpickr("#reportRangeStart", { dateFormat: "d/m/Y", defaultDate: "today", disableMobile: true });
-            window.pickerEnd = flatpickr("#reportRangeEnd", { dateFormat: "d/m/Y", defaultDate: "today", disableMobile: true });
+            var fpConfig = {
+                dateFormat: "d/m/Y",
+                defaultDate: "today",
+                disableMobile: true,
+                static: true,
+                clickOpens: true,
+                allowInput: false,
+                monthSelectorType: "dropdown",
+                onChange: function () {
+                    if (window.updateReportPreviewSummary) window.updateReportPreviewSummary();
+                }
+            };
+
+            window.pickerDay = flatpickr("#reportDaySelect", fpConfig);
+            window.pickerStart = flatpickr("#reportRangeStart", fpConfig);
+            window.pickerEnd = flatpickr("#reportRangeEnd", fpConfig);
         } else {
             var d = new Date();
             var pad = function (n) { return String(n).padStart(2, '0'); };
             var todayStr = pad(d.getDate()) + "/" + pad(d.getMonth() + 1) + "/" + d.getFullYear();
-            document.getElementById('reportDaySelect').value = todayStr;
-            document.getElementById('reportRangeStart').value = todayStr;
-            document.getElementById('reportRangeEnd').value = todayStr;
+            var elD = document.getElementById('reportDaySelect');
+            if (elD) elD.value = todayStr;
+            var elS = document.getElementById('reportRangeStart');
+            if (elS) elS.value = todayStr;
+            var elE = document.getElementById('reportRangeEnd');
+            if (elE) elE.value = todayStr;
         }
-
-        var activeRadio = document.querySelector('input[name="reportRangeType"]:checked');
-        var activeType = activeRadio ? activeRadio.value : 'day';
-        window.switchReportTab(activeType);
 
         // Dynamic population of Chargers and Users selectors for Reports
         var chargerSelect = document.getElementById('reportChargerSelect');
@@ -8438,7 +8493,8 @@
         loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js', function () { });
         loadReportLogoDataUri().catch(function () { });
 
-        document.getElementById('reportsModal').style.display = 'flex';
+        if (window.updateReportPreviewSummary) setTimeout(window.updateReportPreviewSummary, 50);
+    };
         if (window.updateReportPreviewSummary) setTimeout(window.updateReportPreviewSummary, 50);
     };
 
@@ -10895,15 +10951,22 @@
             var data = msg.payload;
 
             
-    // Update Main Grid Gauge / Donut
-    window.updateGridDonut = function (currentKw, limitKw) {
+    // Update Main Grid Gauge / Donut (Phase Load relative to 29A DLB Limit)
+    window.updateGridDonut = function (currentKw, limitVal) {
         var pEl = document.getElementById('gridDonutProgress');
         var tEl = document.getElementById('gridDonutPct');
-        var badge = document.getElementById('dlbBadge');
         if (!pEl || !tEl) return;
 
-        var kw = Number(currentKw) || 0;
-        var limit = Number(limitKw) || (window.currentTotalPower ? Number(window.currentTotalPower) : 0);
+        var limit = Number(limitVal) || window.currentPhaseLimitAmp || (window.currentSmartConfig && window.currentSmartConfig.DLB_PHASE_LIMIT_AMP) || 29.0;
+        var current = 0;
+        if (window.lastShellyData && window.lastShellyData.status) {
+            var ga = Number(window.lastShellyData.status.a_current) || 0;
+            var gb = Number(window.lastShellyData.status.b_current) || 0;
+            var gc = Number(window.lastShellyData.status.c_current) || 0;
+            current = Math.max(ga, gb, gc);
+        } else if (currentKw !== null && currentKw !== undefined) {
+            current = (Number(currentKw) * 1000.0) / (3.0 * 230.0);
+        }
 
         if (!limit || limit <= 0) {
             tEl.textContent = '--%';
@@ -10912,16 +10975,16 @@
             return;
         }
 
-        var pct = Math.round((kw / limit) * 100);
+        var pct = Math.round((current / limit) * 100);
         var clampedPct = Math.min(100, Math.max(0, pct));
         var offset = 100 - clampedPct;
         pEl.style.strokeDashoffset = offset.toString();
         tEl.textContent = pct + '%';
 
-        if (pct >= 90) {
+        if (pct >= 95) {
             pEl.style.stroke = '#ef4444';
             pEl.style.filter = 'drop-shadow(0 0 5px rgba(239, 68, 68, 0.6))';
-        } else if (pct >= 75) {
+        } else if (pct >= 80) {
             pEl.style.stroke = '#f59e0b';
             pEl.style.filter = 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.4))';
         } else {
@@ -11057,7 +11120,42 @@
                 if (elVoltC_mob) elVoltC_mob.textContent = (Number(status.c_voltage) || 0).toFixed(1) + ' V';
                 if (elCurrC_mob) elCurrC_mob.textContent = (Number(status.c_current) || 0).toFixed(2) + ' A';
 
+                // DLB Phase-based telemetry: 29A - Max Phase Current
+                var ga = Math.max(0, Number(status.a_current) || 0);
+                var gb = Math.max(0, Number(status.b_current) || 0);
+                var gc = Math.max(0, Number(status.c_current) || 0);
+                var maxGridAmp = Math.max(ga, gb, gc);
+                var phaseLimit = window.currentPhaseLimitAmp || (window.currentSmartConfig && window.currentSmartConfig.DLB_PHASE_LIMIT_AMP) || 29.0;
+                var dlbAvail = Math.max(0, phaseLimit - maxGridAmp);
+
+                var elDlbAvail = document.getElementById('dlbAvailableAmp');
+                if (elDlbAvail) elDlbAvail.textContent = dlbAvail.toFixed(1) + ' A';
+
+                var lt = document.getElementById('globalPowerLimitTxt');
+                if (lt) lt.innerHTML = ' / ' + phaseLimit + 'A';
+
                 updateGridStatus();
+                return;
+            }
+
+            // Handle DLB Engine events (Phase Limit & Headroom allocation)
+            if (data.type === 'dlb_event') {
+                if (data.limitAmp) window.currentPhaseLimitAmp = Number(data.limitAmp);
+                var elAvail = document.getElementById('dlbAvailableAmp');
+                if (elAvail && data.availableAmp !== undefined) {
+                    elAvail.textContent = Number(data.availableAmp).toFixed(1) + ' A';
+                }
+                var lt = document.getElementById('globalPowerLimitTxt');
+                if (lt && data.limitAmp) {
+                    lt.innerHTML = ' / ' + data.limitAmp + 'A';
+                }
+                var minp = document.getElementById('shellyModalLimitInput');
+                if (minp && data.limitAmp) minp.value = data.limitAmp;
+                var linp = document.getElementById('limitInput');
+                if (linp && data.limitAmp) linp.value = data.limitAmp;
+                if (window.updateGridDonut) {
+                    window.updateGridDonut(null, data.limitAmp);
+                }
                 return;
             }
 
@@ -11652,7 +11750,10 @@
                     <!-- Single Day Input Panel -->
                     <div id="reportDayPanel" class="report-panel" style="display:none; margin-bottom:18px;">
                         <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Select Day</label>
-                        <input type="text" id="reportDaySelect" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;">
+                        <div style="position:relative; width:100%; cursor:pointer;" onclick="if(window.pickerDay) { window.pickerDay.open(); }">
+                            <input type="text" id="reportDaySelect" readonly placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 40px 11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;cursor:pointer;">
+                            <i class="fas fa-calendar-alt" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--blue); pointer-events:none; font-size:16px;"></i>
+                        </div>
                     </div>
 
                     <!-- Range Input Panel -->
@@ -11660,11 +11761,17 @@
                         <div class="report-row" style="display:flex; gap:12px;">
                             <div style="flex:1;">
                                 <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Start Date</label>
-                                <input type="text" id="reportRangeStart" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;">
+                                <div style="position:relative; width:100%; cursor:pointer;" onclick="if(window.pickerStart) { window.pickerStart.open(); }">
+                                    <input type="text" id="reportRangeStart" readonly placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 40px 11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;cursor:pointer;">
+                                    <i class="fas fa-calendar-alt" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--blue); pointer-events:none; font-size:16px;"></i>
+                                </div>
                             </div>
                             <div style="flex:1;">
                                 <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">End Date</label>
-                                <input type="text" id="reportRangeEnd" placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;">
+                                <div style="position:relative; width:100%; cursor:pointer;" onclick="if(window.pickerEnd) { window.pickerEnd.open(); }">
+                                    <input type="text" id="reportRangeEnd" readonly placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 40px 11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;cursor:pointer;">
+                                    <i class="fas fa-calendar-alt" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--blue); pointer-events:none; font-size:16px;"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -13296,19 +13403,19 @@
     window.openAdminModal = openAdminModal;
 
         window.openShellyModal = function () {
-        var cur = window.currentTotalPower || (window.currentSmartConfig && (window.currentSmartConfig.TOTAL_POWER || window.currentSmartConfig.maxPower)) || 24;
+        var curAmp = window.currentPhaseLimitAmp || (window.currentSmartConfig && (window.currentSmartConfig.DLB_PHASE_LIMIT_AMP || window.currentSmartConfig.limitAmp)) || 29;
         var inp = document.getElementById('shellyModalLimitInput');
-        if (inp) inp.value = cur;
+        if (inp) inp.value = curAmp;
         var mlt = document.getElementById('shellyModalLimitTxt');
-        if (mlt) mlt.textContent = cur;
+        if (mlt) mlt.textContent = curAmp;
         var mod = document.getElementById('shellyModal');
         if (mod) mod.classList.add('open');
     };
 
     window.promptGlobalLimit = function () {
-        var current = window.currentTotalPower || 0;
+        var curAmp = window.currentPhaseLimitAmp || (window.currentSmartConfig && window.currentSmartConfig.DLB_PHASE_LIMIT_AMP) || 29;
         var input = document.getElementById('limitInput');
-        if (input) input.value = current;
+        if (input) input.value = curAmp;
         var mod = document.getElementById('limitModal');
         if (mod) mod.classList.add('open');
     };
@@ -13316,9 +13423,9 @@
     window.decrementModalLimit = function () {
         var input = document.getElementById('shellyModalLimitInput');
         if (input) {
-            var val = parseFloat(input.value) || 20;
-            if (val > 5) {
-                input.value = (val - 1.0).toFixed(1);
+            var val = parseInt(input.value, 10) || 29;
+            if (val > 6) {
+                input.value = val - 1;
             }
         }
     };
@@ -13326,9 +13433,9 @@
     window.incrementModalLimit = function () {
         var input = document.getElementById('shellyModalLimitInput');
         if (input) {
-            var val = parseFloat(input.value) || 20;
-            if (val < 150) {
-                input.value = (val + 1.0).toFixed(1);
+            var val = parseInt(input.value, 10) || 29;
+            if (val < 63) {
+                input.value = val + 1;
             }
         }
     };
@@ -13337,20 +13444,24 @@
         var input = document.getElementById('shellyModalLimitInput');
         if (input) {
             var val = parseFloat(input.value);
-            if (isNaN(val) || val < 5 || val > 150) {
-                alert("Please enter a valid limit between 5 and 150 kW");
+            if (isNaN(val) || val < 6 || val > 63) {
+                alert("Please enter a valid phase limit between 6 and 63 A");
                 return;
             }
-            window.currentTotalPower = val;
+            window.currentPhaseLimitAmp = val;
             var lt = document.getElementById('globalPowerLimitTxt');
-            if (lt) lt.innerHTML = ' / ' + val;
+            if (lt) lt.innerHTML = ' / ' + val + 'A';
             var mlt = document.getElementById('shellyModalLimitTxt');
             if (mlt) mlt.textContent = val;
             var linp = document.getElementById('limitInput');
             if (linp) linp.value = val;
             if (window.currentSmartConfig) {
-                window.currentSmartConfig.TOTAL_POWER = val;
-                window.currentSmartConfig.maxPower = val;
+                window.currentSmartConfig.DLB_PHASE_LIMIT_AMP = val;
+                window.currentSmartConfig.TOTAL_POWER = Number(((val * 3 * 230) / 1000).toFixed(1));
+                window.currentSmartConfig.maxPower = window.currentSmartConfig.TOTAL_POWER;
+            }
+            if (window.updateGridDonut) {
+                window.updateGridDonut(null, val);
             }
             if (window.ngScope) {
                 window.ngScope.send({ topic: 'set_global_limit', payload: { type: 'set_global_limit', limit: val } });
@@ -13368,13 +13479,26 @@
         var input = document.getElementById('limitInput');
         if (!input) return;
         var limit = parseFloat(input.value);
-        if (!isNaN(limit) && limit >= 6) {
+        if (!isNaN(limit) && limit >= 6 && limit <= 63) {
+            window.currentPhaseLimitAmp = limit;
+            var lt = document.getElementById('globalPowerLimitTxt');
+            if (lt) lt.innerHTML = ' / ' + limit + 'A';
+            var minp = document.getElementById('shellyModalLimitInput');
+            if (minp) minp.value = limit;
+            if (window.currentSmartConfig) {
+                window.currentSmartConfig.DLB_PHASE_LIMIT_AMP = limit;
+                window.currentSmartConfig.TOTAL_POWER = Number(((limit * 3 * 230) / 1000).toFixed(1));
+                window.currentSmartConfig.maxPower = window.currentSmartConfig.TOTAL_POWER;
+            }
+            if (window.updateGridDonut) {
+                window.updateGridDonut(null, limit);
+            }
             if (window.ngScope) {
                 window.ngScope.send({ topic: 'set_global_limit', payload: { type: 'set_global_limit', limit: limit } });
             }
             document.getElementById('limitModal').classList.remove('open');
         } else {
-            alert("Limit must be a number greater than or equal to 6.");
+            alert("Limit must be a number between 6 and 63 Amperes.");
         }
     };
 
