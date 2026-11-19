@@ -5989,16 +5989,23 @@
     }
 
     .flatpickr-calendar {
-        background: var(--surface, #0f172a) !important;
-        border: 1px solid rgba(59, 130, 246, 0.25) !important;
+        background: #0f172a !important;
+        border: 1px solid rgba(59, 130, 246, 0.35) !important;
         border-radius: 14px !important;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(59, 130, 246, 0.2) !important;
         font-family: var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
-        width: 100% !important;
+        width: 310px !important;
         max-width: 320px !important;
         box-sizing: border-box !important;
         padding: 8px !important;
-        z-index: 100005 !important;
+        z-index: 9999999 !important;
+    }
+
+    .flatpickr-calendar.open {
+        z-index: 9999999 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     .flatpickr-calendar.inline {
@@ -8486,9 +8493,7 @@
             if (r) { r.checked = true; window.switchReportTab("day"); }
             var inp = document.getElementById("reportDaySelect");
             if (inp) inp.value = fmt(today);
-            var pillD = document.getElementById('reportDayPillText');
-            if (pillD) pillD.textContent = fmt(today);
-            if (window.pickerDay) window.pickerDay.setDate(today, true);
+            if (window.pickerDay) window.pickerDay.setDate(today, false);
         } else if (preset === "yesterday") {
             var yest = new Date(today);
             yest.setDate(yest.getDate() - 1);
@@ -8496,22 +8501,19 @@
             if (r) { r.checked = true; window.switchReportTab("day"); }
             var inp = document.getElementById("reportDaySelect");
             if (inp) inp.value = fmt(yest);
-            var pillD = document.getElementById('reportDayPillText');
-            if (pillD) pillD.textContent = fmt(yest);
-            if (window.pickerDay) window.pickerDay.setDate(yest, true);
+            if (window.pickerDay) window.pickerDay.setDate(yest, false);
         } else if (preset === "thisMonth") {
             var r = document.querySelector('input[name="reportRangeType"][value="month"]');
             if (r) { r.checked = true; window.switchReportTab("month"); }
             var sel = document.getElementById("reportMonthSelect");
             if (sel && sel.options.length > 0) sel.selectedIndex = 0;
             var startM = new Date(today.getFullYear(), today.getMonth(), 1);
-            if (window.pickerRange) window.pickerRange.setDate([startM, today], false);
+            if (window.pickerStart) window.pickerStart.setDate(startM, false);
+            if (window.pickerEnd) window.pickerEnd.setDate(today, false);
             var inpS = document.getElementById("reportRangeStart");
             if (inpS) inpS.value = fmt(startM);
             var inpE = document.getElementById("reportRangeEnd");
             if (inpE) inpE.value = fmt(today);
-            var pillR = document.getElementById('reportRangePillText');
-            if (pillR) pillR.textContent = fmt(startM) + ' → ' + fmt(today);
         } else if (preset === "lastMonth") {
             var r = document.querySelector('input[name="reportRangeType"][value="month"]');
             if (r) { r.checked = true; window.switchReportTab("month"); }
@@ -8519,13 +8521,12 @@
             if (sel && sel.options.length > 1) sel.selectedIndex = 1;
             var startLM = new Date(today.getFullYear(), today.getMonth() - 1, 1);
             var endLM = new Date(today.getFullYear(), today.getMonth(), 0);
-            if (window.pickerRange) window.pickerRange.setDate([startLM, endLM], false);
+            if (window.pickerStart) window.pickerStart.setDate(startLM, false);
+            if (window.pickerEnd) window.pickerEnd.setDate(endLM, false);
             var inpS = document.getElementById("reportRangeStart");
             if (inpS) inpS.value = fmt(startLM);
             var inpE = document.getElementById("reportRangeEnd");
             if (inpE) inpE.value = fmt(endLM);
-            var pillR = document.getElementById('reportRangePillText');
-            if (pillR) pillR.textContent = fmt(startLM) + ' → ' + fmt(endLM);
         }
         if (window.updateReportPreviewSummary) window.updateReportPreviewSummary();
     };
@@ -8586,15 +8587,11 @@
 
         var inpD = document.getElementById('reportDaySelect');
         if (inpD && !inpD.value) inpD.value = todayStr;
-        var pillD = document.getElementById('reportDayPillText');
-        if (pillD) pillD.textContent = inpD && inpD.value ? inpD.value : todayStr;
 
         var inpS = document.getElementById('reportRangeStart');
         if (inpS && !inpS.value) inpS.value = todayStr;
         var inpE = document.getElementById('reportRangeEnd');
         if (inpE && !inpE.value) inpE.value = todayStr;
-        var pillR = document.getElementById('reportRangePillText');
-        if (pillR) pillR.textContent = (inpS ? inpS.value : todayStr) + ' → ' + (inpE ? inpE.value : todayStr);
 
         // Show modal and activate tab before flatpickr initialization so dimensions are fully measured
         document.getElementById('reportsModal').style.display = 'flex';
@@ -8602,7 +8599,7 @@
         var activeType = activeRadio ? activeRadio.value : 'day';
         window.switchReportTab(activeType);
 
-        // Initialize inline flatpickr calendars
+        // Initialize flatpickr as dropdown popup attached to document.body (never clipped by modal overflow)
         if (window.flatpickr) {
             try {
                 if (window.pickerDay && typeof window.pickerDay.destroy === 'function') {
@@ -8610,58 +8607,35 @@
                 }
             } catch (e) { }
             try {
-                if (window.pickerRange && typeof window.pickerRange.destroy === 'function') {
-                    window.pickerRange.destroy();
+                if (window.pickerStart && typeof window.pickerStart.destroy === 'function') {
+                    window.pickerStart.destroy();
+                }
+            } catch (e) { }
+            try {
+                if (window.pickerEnd && typeof window.pickerEnd.destroy === 'function') {
+                    window.pickerEnd.destroy();
                 }
             } catch (e) { }
 
-            var elDayInline = document.getElementById('reportDayCalendarInline');
-            if (elDayInline) {
-                elDayInline.innerHTML = '';
-                var curDateVal = inpD && inpD.value ? inpD.value : today;
-                window.pickerDay = flatpickr(elDayInline, {
-                    inline: true,
-                    dateFormat: "d/m/Y",
-                    defaultDate: curDateVal,
-                    disableMobile: true,
-                    monthSelectorType: "static",
-                    onChange: function (selectedDates, dateStr) {
-                        if (inpD) inpD.value = dateStr;
-                        if (pillD) pillD.textContent = dateStr;
-                        if (window.updateReportPreviewSummary) window.updateReportPreviewSummary();
-                    }
-                });
-            }
+            var fpConfig = {
+                dateFormat: "d/m/Y",
+                defaultDate: "today",
+                disableMobile: true,
+                static: false,
+                appendTo: document.body,
+                clickOpens: true,
+                allowInput: false,
+                monthSelectorType: "static",
+                prevArrow: '<i class="fas fa-chevron-left"></i>',
+                nextArrow: '<i class="fas fa-chevron-right"></i>',
+                onChange: function () {
+                    if (window.updateReportPreviewSummary) window.updateReportPreviewSummary();
+                }
+            };
 
-            var elRangeInline = document.getElementById('reportRangeCalendarInline');
-            if (elRangeInline) {
-                elRangeInline.innerHTML = '';
-                var startDef = inpS && inpS.value ? inpS.value : today;
-                var endDef = inpE && inpE.value ? inpE.value : today;
-                window.pickerRange = flatpickr(elRangeInline, {
-                    inline: true,
-                    mode: "range",
-                    dateFormat: "d/m/Y",
-                    defaultDate: [startDef, endDef],
-                    disableMobile: true,
-                    monthSelectorType: "static",
-                    onChange: function (selectedDates, dateStr) {
-                        if (selectedDates.length === 1) {
-                            var s = fmt(selectedDates[0]);
-                            if (inpS) inpS.value = s;
-                            if (inpE) inpE.value = s;
-                            if (pillR) pillR.textContent = s + ' → (choose end)';
-                        } else if (selectedDates.length >= 2) {
-                            var s = fmt(selectedDates[0]);
-                            var e = fmt(selectedDates[1]);
-                            if (inpS) inpS.value = s;
-                            if (inpE) inpE.value = e;
-                            if (pillR) pillR.textContent = s + ' → ' + e;
-                        }
-                        if (window.updateReportPreviewSummary) window.updateReportPreviewSummary();
-                    }
-                });
-            }
+            window.pickerDay = flatpickr("#reportDaySelect", fpConfig);
+            window.pickerStart = flatpickr("#reportRangeStart", fpConfig);
+            window.pickerEnd = flatpickr("#reportRangeEnd", fpConfig);
         } else {
             var d = new Date();
             var pad = function (n) { return String(n).padStart(2, '0'); };
@@ -8716,6 +8690,15 @@
     };
 
     window.closeReportsModal = function () {
+        if (window.pickerDay && typeof window.pickerDay.close === 'function') {
+            try { window.pickerDay.close(); } catch (e) { }
+        }
+        if (window.pickerStart && typeof window.pickerStart.close === 'function') {
+            try { window.pickerStart.close(); } catch (e) { }
+        }
+        if (window.pickerEnd && typeof window.pickerEnd.close === 'function') {
+            try { window.pickerEnd.close(); } catch (e) { }
+        }
         document.getElementById('reportsModal').style.display = 'none';
     };
 
@@ -11968,28 +11951,32 @@
                     </div>
 
                     <!-- Single Day Input Panel -->
-                    <div id="reportDayPanel" class="report-panel" style="display:none; margin-bottom:14px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <label class="form-label" style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:0;">Select Day</label>
-                            <span id="reportDayPill" style="font-size:12px; font-weight:700; color:#38bdf8; background:rgba(56,189,248,0.12); padding:3px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.25);">
-                                <i class="fas fa-calendar-check" style="margin-right:5px;"></i><span id="reportDayPillText">—</span>
-                            </span>
+                    <div id="reportDayPanel" class="report-panel" style="display:none; margin-bottom:18px;">
+                        <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Select Day</label>
+                        <div style="position:relative; width:100%; cursor:pointer;" onclick="if(window.pickerDay) { window.pickerDay.open(); }">
+                            <input type="text" id="reportDaySelect" readonly placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 40px 11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;cursor:pointer;">
+                            <i class="fas fa-calendar-alt" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--blue); pointer-events:none; font-size:16px;"></i>
                         </div>
-                        <input type="hidden" id="reportDaySelect" value="">
-                        <div id="reportDayCalendarInline" style="display:flex; justify-content:center; width:100%; margin-bottom:12px;"></div>
                     </div>
 
                     <!-- Range Input Panel -->
-                    <div id="reportRangePanel" class="report-panel" style="display:none; margin-bottom:14px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <label class="form-label" style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:0;">Custom Range</label>
-                            <span id="reportRangePill" style="font-size:12px; font-weight:700; color:#38bdf8; background:rgba(56,189,248,0.12); padding:3px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.25);">
-                                <i class="fas fa-calendar-week" style="margin-right:5px;"></i><span id="reportRangePillText">—</span>
-                            </span>
+                    <div id="reportRangePanel" class="report-panel" style="display:none; margin-bottom:18px;">
+                        <div class="report-row" style="display:flex; gap:12px;">
+                            <div style="flex:1;">
+                                <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Start Date</label>
+                                <div style="position:relative; width:100%; cursor:pointer;" onclick="if(window.pickerStart) { window.pickerStart.open(); }">
+                                    <input type="text" id="reportRangeStart" readonly placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 40px 11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;cursor:pointer;">
+                                    <i class="fas fa-calendar-alt" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--blue); pointer-events:none; font-size:16px;"></i>
+                                </div>
+                            </div>
+                            <div style="flex:1;">
+                                <label class="form-label" style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">End Date</label>
+                                <div style="position:relative; width:100%; cursor:pointer;" onclick="if(window.pickerEnd) { window.pickerEnd.open(); }">
+                                    <input type="text" id="reportRangeEnd" readonly placeholder="dd/mm/yyyy" oninput="if(window.updateReportPreviewSummary) window.updateReportPreviewSummary();" style="width:100%;background:var(--surface3);border:1px solid var(--border);color:var(--text);padding:11px 40px 11px 14px;border-radius:8px;outline:none;font-family:var(--font-ui);font-size:14px;cursor:pointer;">
+                                    <i class="fas fa-calendar-alt" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--blue); pointer-events:none; font-size:16px;"></i>
+                                </div>
+                            </div>
                         </div>
-                        <input type="hidden" id="reportRangeStart" value="">
-                        <input type="hidden" id="reportRangeEnd" value="">
-                        <div id="reportRangeCalendarInline" style="display:flex; justify-content:center; width:100%; margin-bottom:12px;"></div>
                     </div>
 
                     <!-- Quick Period Presets -->
