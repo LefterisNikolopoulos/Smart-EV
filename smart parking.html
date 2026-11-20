@@ -7415,24 +7415,16 @@
                         <div class="kpi-label">Solar Power</div>
                     </div>
                 </div>
-                <!-- Main Grid Power (kW) KPI Pill with Live Donut -->
-                <div class="kpi-pill grid-kpi-pill" id="shellyPowerKpiCard"
+                <!-- Main Grid Power (kW) KPI Pill -->
+                <div class="kpi-pill" id="shellyPowerKpiCard"
                     onclick="window.openShellyModal()" style="cursor:pointer;"
                     title="Click for Grid & Power details">
-                    <div class="grid-donut-wrap" title="Grid Power Utilization % (relative to total kW limit)">
-                        <svg class="grid-donut-svg" viewBox="0 0 36 36">
-                            <path class="grid-donut-bg"
-                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path id="gridPowerDonutProgress" class="grid-donut-progress"
-                                stroke-dasharray="100"
-                                stroke-dashoffset="100"
-                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        </svg>
-                        <span id="gridPowerDonutPct" class="grid-donut-text">0%</span>
+                    <div class="kpi-pill-icon grid-icon">
+                        <i class="fas fa-bolt"></i>
                     </div>
                     <div class="kpi-content">
                         <div class="kpi-val">
-                            <span id="shellyPower">0.00</span><span id="globalPowerLimitTxt" class="kpi-limit-dim"> / -</span><span class="kpi-unit">kW</span>
+                            <span id="shellyPower">0.00</span><span class="kpi-unit">kW</span>
                         </div>
                         <div class="kpi-sub shelly-kpi-status">
                             <span title="Apparent Power"><span id="shellyAprt">0</span> VA</span>

@@ -100,8 +100,6 @@
     }
   },
   "DLB_PHASE_LIMIT_AMP": 29,
-  "TOTAL_POWER": 20,
-  "maxPower": 20,
   "FORECAST_SCENARIO": "scen_1783409871055",
   "savedAt": 1788459884434
 }
