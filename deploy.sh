@@ -290,6 +290,8 @@ echo "WwogICAgewogICAgICAgICJpZCI6ICIzMDA2MzcxM2Q0ZTI0YzA3IiwKICAgICAgICAidHlwZS
 # Auto-adjust any /home/XXX/ paths in flows.json to match target user
 echo "Adjusting paths in flows.json to /home/$TARGET_USER/..."
 sed -i -E "s|/home/[a-zA-Z0-9_.-]+/|/home/$TARGET_USER/|g" "$ND_DIR/flows.json"
+cp -f "$ND_DIR/flows.json" "/home/$TARGET_USER/flows.json" 2>/dev/null || true
+chown "$TARGET_USER:$TARGET_USER" "/home/$TARGET_USER/flows.json" 2>/dev/null || true
 
 # Remove any old conflicting standalone systemd units if they exist
 systemctl disable --now smartev-poller smartev-forecast 2>/dev/null || true
